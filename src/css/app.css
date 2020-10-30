@@ -1,0 +1,186 @@
+* {
+    font-family: Arial, Helvetica, sans-serif!important;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+
+    /* -webkit-user-drag: none;
+    user-drag: none; */
+
+    outline-style:none;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+
+}
+
+*:focus {
+    outline: none;
+}
+
+body {
+  background-color: #fff;
+  margin: 0px;
+  padding: 0px;
+}
+
+
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+p {
+  font-size: 1em;
+}
+
+small {
+  font-size: .5em;
+}
+
+#Container {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  overflow: hidden;
+  position: absolute;
+  display: block;
+  left:0px;
+  top:0px;
+  width: 100%;
+  height: 100%;
+  line-height: 0;
+}
+
+
+#EditorPlace {
+  position: absolute;
+  display: block;
+  left:0px;
+  right: 20%;
+  top:10%;
+  bottom:0px;
+  line-height: 0;
+  /* background-color: green; */
+}
+
+#EditorContainer {
+  position: absolute;
+  display: block;
+  transform-origin: top left;
+  overflow: hidden;
+  /* background-color: blue; */
+}
+
+#Editor {
+  position: absolute;
+  display: block;
+  /* background-color: yellow; */
+}
+
+#TopMenu {
+  position: absolute;
+  display: block;
+  right: 0px;
+  top: 0px;
+  left: 0px;
+  height: 10%;
+
+  line-height: 0;
+  background-color: white;
+  z-index: 1;
+  border-bottom: 1px solid #dddddd;
+  /* background-color: violet; */
+}
+
+#SideMenu {
+  position: absolute;
+  display: block;
+  right: 0px;
+  top: 10%;
+  bottom: 0px;
+  width: 20%;
+
+  line-height: 0;
+  background-color: white;
+  z-index: 1;
+  border-left: 1px solid #dddddd;
+  /* background-color: red; */
+}
+
+#MainImage {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.95;
+}
+
+.sideMenuImage {
+  position: absolute;
+  display: block;
+  width: 100%;
+  object-fit: contain;
+  cursor: pointer;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+.topMenuButton {
+  position: absolute;
+  display: block;
+  background-color: #ddd;
+  border: 1px solid #eee;
+  cursor: pointer;
+  line-height: normal;
+  text-align: center;
+  padding: 10px;
+  top:50%;
+  transform: translateY(-50%);
+}
+
+
+.topMenuTitle {
+  position: absolute;
+  display: block;
+  line-height: normal;
+  text-align: center;
+  padding: 10px;
+  top:50%;
+  transform: translateY(-50%);
+  width: 100%;
+  
+}
+
+.sideMenuButton {
+  position: absolute;
+  display: block;
+  width: 60%;
+  left: 50%;
+  background-color: #ddd;
+  border: 1px solid #eee;
+  cursor: pointer;
+  line-height: normal;
+  text-align: center;
+  padding: 10px;
+}
+
+.editorImage {
+  position: absolute;
+  background-color: white;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
