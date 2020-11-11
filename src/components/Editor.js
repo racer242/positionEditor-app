@@ -60,26 +60,58 @@ class Editor extends Component {
       params.target.style.transform=params.transform;
     }
     let index=Number(params.target.id.substr(3));
+    let transform=this.state.addImagesTransform[index];
+
+    if (params.translate!=null) {
+      transform.x+=Number(params.delta[0])*transform.scale;
+      transform.y+=Number(params.delta[1])*transform.scale;
+    }
+    if (params.scale!=null) {
+      transform.scale*=Number(params.delta[0]);
+    }
+    if (params.rotate!=null) {
+      transform.rotation+=Number(params.delta);
+    }
+
+    this.store.dispatch(
+      updateImage(index,transform)
+    )
+
   }
 
   movable_transformEndHandler(params) {
     let index=Number(params.target.id.substr(3));
-    let transform=(/\((.+),\s*(.+),\s*(.+),\s*(.+),\s*(.+),\s*(.+)\)/g).exec(window.getComputedStyle(params.target,null).transform);
-    let matrix=[1,0,0,1,0,0];
-    if (transform) {
-      transform.splice(0,1);
+    let t=(/\((.+),\s*(.+),\s*(.+),\s*(.+),\s*(.+),\s*(.+)\)/g).exec(window.getComputedStyle(params.target,null).transform);
+    let matrix={
+      ...this.state.addImagesMatrix,
+    };
+    if (t) {
+      t.splice(0,1);
       matrix=[]
-      for (let i = 0; i < transform.length; i++) {
-        matrix.push(transform[i])
+      for (let i = 0; i < t.length; i++) {
+        matrix.push(t[i])
       }
     }
-    // console.log("?????",matrix);
+
+    let bounds=params.target.getBoundingClientRect();
+    bounds={
+      x:(bounds.x)/this.props.geom.scale-this.props.geom.x,
+      y:(bounds.y-this.props.geom.offsetY)/this.props.geom.scale-this.props.geom.y,
+      width:bounds.width/this.props.geom.scale,
+      height:bounds.height/this.props.geom.scale,
+    }
+
+    let transform={
+      ...this.state.addImagesTransform[index],
+    }
+
     this.currentZ++;
     this.targetZs[index]=this.currentZ;
-    
+
     this.store.dispatch(
-      updateImage(index,matrix)
+      updateImage(index,transform,matrix,bounds)
     )
+
   }
 
 
@@ -100,9 +132,10 @@ class Editor extends Component {
         let i=indexes[ii].i;
         let imageSrc = this.state.addImagesSrc[i];
         let addImageTransform = this.state.addImagesTransform[i];
-        if (addImageTransform) {
+        let addImageMatrix = this.state.addImagesMatrix[i];
+        let addImageBounds = this.state.addImagesBounds[i];
 
-          // console.log("!!!!!",addImageTransform);
+        if (addImageTransform&&addImageMatrix&&addImageBounds) {
 
           children.push(
             <img
@@ -112,7 +145,7 @@ class Editor extends Component {
               className="editorImage"
               ref={this.targetRefs[i]}
               style={{
-                transform:`matrix(${addImageTransform})`,
+                transform:`matrix(${addImageMatrix})`,
                 width:this.state.addImagesDefaultSize.width,
                 height:this.state.addImagesDefaultSize.height,
               }}
@@ -121,6 +154,43 @@ class Editor extends Component {
             />
           );
 
+          // children.push(
+          //   <div
+          //     id={"tst"+i}
+          //     key={"tst"+i}
+          //     style={{
+          //       position:"absolute",
+          //       display:"block",
+          //       width:addImageBounds.width+"px",
+          //       height:addImageBounds.height+"px",
+          //       left:addImageBounds.x+"px",
+          //       top:addImageBounds.y+"px",
+          //       background:"#000",
+          //       pointerEvents:"none",
+          //       opacity:0.2,
+          //     }}
+          //   />
+          // );
+          //
+          // console.log(`translate(${addImageTransform.x}px,${addImageTransform.y}px) rotate(${addImageTransform.rotation}deg) scale(${addImageTransform.scale})`);
+          //
+          // children.push(
+          //   <div
+          //     id={"trt"+i}
+          //     key={"trt"+i}
+          //     style={{
+          //       position:"absolute",
+          //       display:"block",
+          //       transform:`translate(${addImageTransform.x}px,${addImageTransform.y}px) rotate(${addImageTransform.rotation}deg) scale(${addImageTransform.scale})`,
+          //       width:this.state.addImagesDefaultSize.width,
+          //       height:this.state.addImagesDefaultSize.height,
+          //       background:"#ff0000",
+          //       pointerEvents:"none",
+          //       opacity:0.3,
+          //     }}
+          //   />
+          // );
+          if (!this.state.justAdded) {
           children.push(
             <Moveable
               key={"Moveable"+i}
@@ -154,7 +224,7 @@ class Editor extends Component {
               onPinchEnd={this.movable_transformEndHandler}
             />
           )
-
+          }
 
         }
       }

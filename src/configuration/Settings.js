@@ -30,6 +30,8 @@ const settings = {
 
     mainImageSrc:"",
     addImagesSrc:["","",""],
+    addImagesMatrix:[null,null,null],
+    addImagesBounds:[null,null,null],
     addImagesTransform:[null,null,null],
 
     title:"",

@@ -6,17 +6,41 @@ let mainReducerController = (state={}, action) => {
 
 
       case 'USE_IMAGE': {
-        let addImagesTransform=state.addImagesTransform.concat();
         let editorBounds=state.editorBounds;
         let imageSize=state.addImagesDefaultSize;
+
+        let addImagesTransform=state.addImagesTransform.concat();
         if (!addImagesTransform[action.index]) {
-          addImagesTransform[action.index]=[
+          addImagesTransform[action.index]={
+            x:(editorBounds.width-imageSize.width)/2,
+            y:(editorBounds.height-imageSize.height)/2,
+            scale:state.addImagesDefaultScale,
+            rotation:0,
+          }
+        }
+
+        let addImagesMatrix=state.addImagesMatrix.concat();
+        if (!addImagesMatrix[action.index]) {
+          addImagesMatrix[action.index]=[
             state.addImagesDefaultScale, 0, 0, state.addImagesDefaultScale, (editorBounds.width-imageSize.width)/2, (editorBounds.height-imageSize.height)/2
           ]
         }
+
+        let addImagesBounds=state.addImagesBounds.concat();
+        if (!addImagesBounds[action.index]) {
+          addImagesBounds[action.index]={
+            x:(editorBounds.width-imageSize.width)/2,
+            y:(editorBounds.height-imageSize.height)/2,
+            width:imageSize.width*state.addImagesDefaultScale,
+            height:imageSize.height*state.addImagesDefaultScale,
+          }
+        }
+
         return {
           ...state,
           addImagesTransform,
+          addImagesMatrix,
+          addImagesBounds,
           justAdded:true,
         }
       }
@@ -30,22 +54,48 @@ let mainReducerController = (state={}, action) => {
 
       case 'CLEAR_IMAGE': {
         let addImagesTransform=state.addImagesTransform.concat();
-        if (addImagesTransform[action.index]) {
-          addImagesTransform[action.index]=null;
-        }
+        addImagesTransform[action.index]=null;
+
+        let addImagesMatrix=state.addImagesMatrix.concat();
+        addImagesMatrix[action.index]=null;
+
+        let addImagesBounds=state.addImagesBounds.concat();
+        addImagesBounds[action.index]=null;
+
         return {
           ...state,
           addImagesTransform,
+          addImagesMatrix,
+          addImagesBounds,
         }
       }
 
       case 'UPDATE_IMAGE': {
+
         let addImagesTransform=state.addImagesTransform.concat();
-        addImagesTransform[action.index]=action.transform;
+        if (action.transform) {
+          addImagesTransform[action.index]=action.transform;
+        }
+
+        let addImagesMatrix=state.addImagesMatrix.concat();
+        if (action.matrix) {
+          addImagesMatrix[action.index]=action.matrix;
+        }
+
+        let addImagesBounds=state.addImagesBounds.concat();
+        if (action.bounds) {
+          addImagesBounds[action.index]=action.bounds;
+        }
+
         // console.log(addImagesTransform);
+        // console.log(addImagesMatrix);
+
         return {
           ...state,
           addImagesTransform,
+          addImagesMatrix,
+          addImagesBounds,
+          justAdded:false,
         }
       }
 
@@ -64,10 +114,12 @@ let mainReducerController = (state={}, action) => {
       }
 
       case 'SET_STORE_DATA': {
+        // console.log("!!!?????????!!!!!!!!!");
         return {
           ...state,
           ...action.data,
           loaded:true,
+          justAdded:true,
         }
       }
 

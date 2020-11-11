@@ -60,7 +60,7 @@ class SideMenu extends Component {
 
       for (let i = 0; i < this.state.addImagesSrc.length; i++) {
         let imageSrc = this.state.addImagesSrc[i];
-        let addImageTransform = this.state.addImagesTransform[i];
+        let addImageTransform = this.state.addImagesMatrix[i];
         if (!addImageTransform) {
           children.push(
             <img

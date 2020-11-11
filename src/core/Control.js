@@ -65,15 +65,7 @@ class Control extends Component {
           this.store.dispatch(
             reinitMovable()
           );
-        }, 100);
-      }
-
-      if (state.justAdded) {
-        this.loadTimeout=setTimeout(()=>{
-          this.store.dispatch(
-            reinitMovable()
-          );
-        }, 100);
+        }, 200);
       }
 
       if (state.action) {

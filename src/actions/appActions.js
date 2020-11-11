@@ -12,11 +12,13 @@ export const clearImage = (index) => {
   }
 }
 
-export const updateImage = (index,transform) => {
+export const updateImage = (index,transform,matrix,bounds) => {
   return {
     type: 'UPDATE_IMAGE',
     index,
     transform,
+    matrix,
+    bounds,
   }
 }
 

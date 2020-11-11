@@ -70,6 +70,18 @@ class EditorPlace extends Component {
     let children = [];
     children.push(this.props.children);
 
+    let offsetY=0;
+    if (this.ref.current) {
+      offsetY=this.ref.current.getBoundingClientRect().y;
+    }
+
+    let geom={
+      scale:this.state.editorScale,
+      x:this.state.editorX,
+      y:this.state.editorY,
+      offsetY,
+    }
+    
     children.push(
       <div
         id="EditorContainer"
@@ -87,6 +99,7 @@ class EditorPlace extends Component {
           scale={this.state.editorScale}
           store={this.props.store}
           ref={this.editorRef}
+          geom={geom}
           style={{
             width:(this.state.editorBounds)?this.state.editorBounds.width:0,
             height:(this.state.editorBounds)?this.state.editorBounds.height:0,
