@@ -5,6 +5,11 @@ import {
   updateImage,
 } from '../actions/appActions';
 
+import {
+  decomposeMatrix,
+} from '../core/helpers.js';
+
+
 class Editor extends Component {
 
   constructor(props) {
@@ -60,24 +65,30 @@ class Editor extends Component {
       params.target.style.transform=params.transform;
     }
     let index=Number(params.target.id.substr(3));
-    let transform=this.state.addImagesTransform[index];
 
-    if (params.translate!=null) {
-      transform.x+=Number(params.delta[0])*transform.scale;
-      transform.y+=Number(params.delta[1])*transform.scale;
-    }
-    if (params.scale!=null) {
-      transform.scale*=Number(params.delta[0]);
-    }
-    if (params.rotate!=null) {
-      transform.rotation+=Number(params.delta);
-    }
+    // let transform=this.state.addImagesTransform[index];
+    //
+    // if (params.translate!=null) {
+    //   transform.x+=Number(params.delta[0])*transform.scale;
+    //   transform.y+=Number(params.delta[1])*transform.scale;
+    // }
+    // if (params.scale!=null) {
+    //   transform.scale*=Number(params.delta[0]);
+    // }
+    // if (params.rotate!=null) {
+    //   transform.rotation+=Number(params.delta);
+    // }
 
-    this.store.dispatch(
-      updateImage(index,transform)
-    )
+    // this.store.dispatch(
+    //   updateImage(index,transform)
+    // )
 
   }
+
+
+
+
+
 
   movable_transformEndHandler(params) {
     let index=Number(params.target.id.substr(3));
@@ -101,12 +112,20 @@ class Editor extends Component {
       height:bounds.height/this.props.geom.scale,
     }
 
+    let decomp = decomposeMatrix(matrix);
+
     let transform={
-      ...this.state.addImagesTransform[index],
+      x:decomp.translateX,
+      y:decomp.translateY,
+      rotation:decomp.rotation,
+      scale:decomp.scaleX,
     }
 
     this.currentZ++;
     this.targetZs[index]=this.currentZ;
+
+    // console.log("S="+transform.scale,"R="+transform.rotation);
+    // console.log("X="+bounds.x,"Y="+bounds.x,"W="+bounds.width,"H="+bounds.height);
 
     this.store.dispatch(
       updateImage(index,transform,matrix,bounds)

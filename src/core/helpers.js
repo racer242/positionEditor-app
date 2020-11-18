@@ -39,76 +39,53 @@ export const openLink = (link) => {
   window.open(link,"_blank")
 }
 
-export const formatWeight = (weight) => {
-  if (weight==null) {
-    return "--Кб"
+export const decomposeMatrix = (m) => {
+
+  function Point(x, y)
+  {
+    return { x: x, y: y };
   }
 
-  weight=Number(weight)
-  let output=""
+  function matrixTransforms(matrix) {
+    // calculate delta transform point
+    var px = deltaTransformPoint(matrix, new Point(0, 1));
+    var py = deltaTransformPoint(matrix, new Point(1, 0));
 
-  if (weight>=1000000) {
-    output=Math.round(weight*100/1000000)/100+"Мб";
-  } else
-  if (weight>=1000) {
-    output=Math.round(weight*100/1000)/100+"Kб";
-  } else {
-    output=weight+"б";
-  }
-  return output
-}
+    // calculate skew
+    var skewX = ((180 / Math.PI) * Math.atan2(px.y, px.x) - 90);
+    var skewY = ((180 / Math.PI) * Math.atan2(py.y, py.x));
 
-export const exportCreatives = (creatives,passStatus) => {
-  let creativeList=[];
-  for (let name in creatives) {
-    let creative=creatives[name];
-    creativeList.push(creative);
-  }
-
-  creativeList.sort((a,b)=>{
-    if (a.section>b.section) return 1;
-    if (a.section<b.section) return -1;
-
-    if (a.publisher>b.publisher) return 1;
-    if (a.publisher<b.publisher) return -1;
-
-    if (a.formatName>b.formatName) return 1;
-    if (a.formatName<b.formatName) return -1;
-
-    if (a.feed>b.feed) return 1;
-    if (a.feed<b.feed) return -1;
-
-    if (a.updateTime>b.updateTime) return 1;
-    return -1;
-  });
-
-  let data=[]
-  data.push(
-    [
-      { value:"Раздел", type:"string" },
-      { value:"Площадка", type:"string" },
-      { value:"Платформа", type:"string" },
-      { value:"Формат", type:"string" },
-      { value:"Фид", type:"string" },
-      { value:"Статус", type:"string" },
-      { value:"Рецензия", type:"string" },
-    ]
-  );
-
-  for (let i = 0; i < creativeList.length; i++) {
-    let creative=creativeList[i];
-    data.push(
-      [
-        { value:creative.section, type:"string" },
-        { value:creative.publisher, type:"string" },
-        { value:creative.platform, type:"string" },
-        { value:creative.formatName, type:"string" },
-        { value:creative.feed, type:"string" },
-        { value:creative.state, type:"string" },
-        { value:passStatus[creative.name]?"Принят":"Не принят", type:"string" },
-      ]
-    );
+    return {
+      translateX:matrix.tx,
+      translateY:matrix.ty,
+      scaleX:Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b),
+      scaleY:Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d),
+      skewX:skewX,
+      skewY:skewY,
+      rotation:skewX // rotation is the same as skew x
+    }
   }
 
-  return data;
+  function deltaTransformPoint(matrix, point)  {
+    //return matrix.deltaTransformPoint(point);
+    var dx = point.x * matrix.a + point.y * matrix.c + 0;
+    var dy = point.x * matrix.b + point.y * matrix.d + 0;
+    return new Point(dx, dy);
+  }
+
+  function asDecompose(inMatrix)
+  {
+    var matrix = {
+      a: inMatrix[0],
+      b: inMatrix[1],
+      c: inMatrix[2],
+      d: inMatrix[3],
+      tx: inMatrix[4],
+      ty: inMatrix[5]
+    };
+
+    return matrixTransforms(matrix);
+  }
+
+  return asDecompose(m)
 }
